@@ -42,6 +42,100 @@
       "title": "Quesionnaire Form",
       "_tab": "Content"
     },
+    "2": {
+      "id": "2",
+      "type": "lab.canvas.Screen",
+      "content": [],
+      "viewport": [
+        800,
+        600
+      ],
+      "files": {
+        "rows": []
+      },
+      "responses": {
+        "rows": [
+          [
+            "",
+            "",
+            "",
+            ""
+          ]
+        ]
+      },
+      "parameters": {
+        "rows": [
+          [
+            {
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        ]
+      },
+      "messageHandlers": {
+        "rows": [
+          [
+            {
+              "title": "",
+              "message": "",
+              "code": ""
+            }
+          ]
+        ]
+      },
+      "title": "Status:started",
+      "_tab": "Behavior",
+      "skip": true
+    },
+    "3": {
+      "id": "3",
+      "type": "lab.canvas.Screen",
+      "content": [],
+      "viewport": [
+        800,
+        600
+      ],
+      "files": {
+        "rows": []
+      },
+      "responses": {
+        "rows": [
+          [
+            "",
+            "",
+            "",
+            ""
+          ]
+        ]
+      },
+      "parameters": {
+        "rows": [
+          [
+            {
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        ]
+      },
+      "messageHandlers": {
+        "rows": [
+          [
+            {
+              "title": "",
+              "message": "",
+              "code": ""
+            }
+          ]
+        ]
+      },
+      "title": "Status:submitted",
+      "_tab": "Behavior",
+      "skip": true
+    },
     "7": {
       "id": "7",
       "type": "lab.html.Screen",
@@ -823,9 +917,9 @@
           ]
         ]
       },
-      "title": "Screen",
+      "title": "Study Introduction",
       "content": "  <header>\n    <h2> Introduction </h2>\n  </header>\n  \n  <main class=\"content-horizontal-center content-vertical-center\">\n      <div class=\"w-m text-justify\">\n        <div class=\"alert w-100 text-center\">\n          <p class=\"font-weight-bold\">\n          Thank you for choosing this study! \n          </p>\n        </div>\n        <p>\n          \\INSERT STUDY DESCRIPTION HERE\\\n        </p>\n        <p>\n          First, please look over our consent document. Make sure to read it carefullly. \n        </p>\n\n        <p> <a href = \"consent.pdf\" target = \"_blank\" >consent document </a> </p>\n        <p> Once you have read over the consent document, please press \"continue\" below. \n        </p>\n        <p> <strong> By pressing continue, you are indicating that you have read the consent document and consent to participate in this study.</strong> </p>\n        <p>  Press continue to begin the study </p>\n        <p> <button id = \"continue\">Continue &rarr;</button> </p>\n      </div>\n  </main>\n",
-      "_tab": "Behavior"
+      "_tab": "Content"
     },
     "35": {
       "id": "35",
@@ -941,9 +1035,11 @@
         "8",
         "33",
         "11",
+        "2",
         "35",
         "1",
         "30",
+        "3",
         "9"
       ],
       "plugins": [
@@ -976,7 +1072,7 @@
   "version": [
     20,
     0,
-    0
+    1
   ],
   "files": {
     "files": {

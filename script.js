@@ -52,7 +52,7 @@ const study = lab.util.fromObject({
       },
       "parameters": {},
       "messageHandlers": {},
-      "title": "Screen",
+      "title": "Study Introduction",
       "content": "  \u003Cheader\u003E\n    \u003Ch2\u003E Introduction \u003C\u002Fh2\u003E\n  \u003C\u002Fheader\u003E\n  \n  \u003Cmain class=\"content-horizontal-center content-vertical-center\"\u003E\n      \u003Cdiv class=\"w-m text-justify\"\u003E\n        \u003Cdiv class=\"alert w-100 text-center\"\u003E\n          \u003Cp class=\"font-weight-bold\"\u003E\n          Thank you for choosing this study! \n          \u003C\u002Fp\u003E\n        \u003C\u002Fdiv\u003E\n        \u003Cp\u003E\n          \\INSERT STUDY DESCRIPTION HERE\\\n        \u003C\u002Fp\u003E\n        \u003Cp\u003E\n          First, please look over our consent document. Make sure to read it carefullly. \n        \u003C\u002Fp\u003E\n\n        \u003Cp\u003E \u003Ca href = \"consent.pdf\" target = \"_blank\" \u003Econsent document \u003C\u002Fa\u003E \u003C\u002Fp\u003E\n        \u003Cp\u003E Once you have read over the consent document, please press \"continue\" below. \n        \u003C\u002Fp\u003E\n        \u003Cp\u003E \u003Cstrong\u003E By pressing continue, you are indicating that you have read the consent document and consent to participate in this study.\u003C\u002Fstrong\u003E \u003C\u002Fp\u003E\n        \u003Cp\u003E  Press continue to begin the study \u003C\u002Fp\u003E\n        \u003Cp\u003E \u003Cbutton id = \"continue\"\u003EContinue &rarr;\u003C\u002Fbutton\u003E \u003C\u002Fp\u003E\n      \u003C\u002Fdiv\u003E\n  \u003C\u002Fmain\u003E\n"
     },
     {
@@ -292,6 +292,20 @@ this.state.headphone_check_performance = performance
     },
     {
       "type": "lab.canvas.Screen",
+      "content": [],
+      "viewport": [
+        800,
+        600
+      ],
+      "files": {},
+      "responses": {},
+      "parameters": {},
+      "messageHandlers": {},
+      "title": "Status:started",
+      "skip": true
+    },
+    {
+      "type": "lab.canvas.Screen",
       "content": [
         {
           "type": "i-text",
@@ -374,6 +388,20 @@ if (transmitPlugins.length > 0) {
       "title": "Data transmission (beta)",
       "content": "\u003Cmain class=\"content-horizontal-center content-vertical-center\"\u003E\n  \u003Cdiv\u003E\n    \u003Cimg src=\"lib\u002Floading.svg\"\u003E\n    \u003Cp\u003E\n      \u003Cspan class=\"font-weight-bold\"\u003E\n        ${ this.parameters.message }\n      \u003C\u002Fspan\u003E\u003Cbr\u003E\n      \u003Cspan class=\"text-muted\"\u003E\n        ${ this.parameters.subtitle }\n      \u003C\u002Fspan\u003E\n    \u003C\u002Fp\u003E\n  \u003C\u002Fdiv\u003E\n\u003C\u002Fmain\u003E",
       "notes": "This template transmits the study data to a compatible server-side backend. Currently, it supports the PHP, Open Lab and JATOS backends.\n\nIt will wait until the data is transferred, showing a waiting screen with the text defined below, and continue with the remainder of the study after the transmission is complete. Please note that this screen will be skipped if no compatible backend is available."
+    },
+    {
+      "type": "lab.canvas.Screen",
+      "content": [],
+      "viewport": [
+        800,
+        600
+      ],
+      "files": {},
+      "responses": {},
+      "parameters": {},
+      "messageHandlers": {},
+      "title": "Status:submitted",
+      "skip": true
     },
     {
       "type": "lab.html.Screen",
