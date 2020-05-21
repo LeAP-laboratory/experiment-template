@@ -35,6 +35,57 @@ const study = lab.util.fromObject({
       "skip": "${ this.parameters.condition != \"preview\" } "
     },
     {
+      "type": "lab.canvas.Screen",
+      "content": [],
+      "viewport": [
+        800,
+        600
+      ],
+      "files": {},
+      "responses": {},
+      "parameters": {},
+      "messageHandlers": {
+        "run": function anonymous(
+) {
+function anonymous(
+          ) {
+          const transmitPlugins = this.parents[0].plugins.plugins
+            .filter(p => p instanceof lab.plugins.Transmit)
+
+          if (transmitPlugins.length > 0) {
+            // If a transmitPlugin is available,
+            // pull out its options and transfer the data
+            const ds = this.options.datastore
+            const tp = transmitPlugins[0]
+            console.log(tp)
+            ds.transmit(
+              tp.url,
+              { ...tp.metadata, payload: 'full' },
+              { headers: tp.headers, encoding: tp.encoding },
+            ).then(
+              () => this.end('transmission successful')
+            ).catch(
+              () => this.end('transmission failed')
+            )
+          } else if ('jatos' in window) {
+            // If JATOS is available, send data there
+            jatos.submitResultData(
+              this.options.datastore.exportJson(),
+              () => this.end('transmission successful'),
+              () => this.end('transmission failed')
+            )
+          } else {
+            console.log('no compatible backend')
+            this.end('no compatible backend')
+          }
+        }
+  
+}
+      },
+      "title": "Session-plugin",
+      "skip": true
+    },
+    {
       "type": "lab.html.Screen",
       "files": {},
       "parameters": {},
@@ -334,7 +385,8 @@ this.state.headphone_check_performance = performance
       "responses": {},
       "parameters": {},
       "messageHandlers": {},
-      "title": "INSERT-STUDY"
+      "title": "INSERT-STUDY",
+      "timeout": "1000"
     },
     {
       "type": "lab.html.Form",
@@ -344,50 +396,6 @@ this.state.headphone_check_performance = performance
       "responses": {},
       "messageHandlers": {},
       "title": "Quesionnaire Form"
-    },
-    {
-      "type": "lab.html.Screen",
-      "files": {},
-      "parameters": {
-        "message": "Transferring data",
-        "subtitle": "Please wait a second…"
-      },
-      "responses": {},
-      "messageHandlers": {
-        "run": function anonymous(
-) {
-const transmitPlugins = this.parents[0].plugins.plugins
-  .filter(p => p instanceof lab.plugins.Transmit)
-
-if (transmitPlugins.length > 0) {
-  // If a transmitPlugin is available,
-  // pull out its options and transfer the data
-  const ds = this.options.datastore
-  const tp = transmitPlugins[0]
-  ds.transmit(
-    tp.url,
-    { ...tp.metadata, payload: 'full' },
-    { headers: tp.headers, encoding: tp.encoding },
-  ).then(
-    () => this.end('transmission successful')
-  ).catch(
-    () => this.end('transmission failed')
-  )
-} else if ('jatos' in window) {
-  // If JATOS is available, send data there
-  jatos.submitResultData(
-    this.options.datastore.exportJson(),
-    () => this.end('transmission successful'),
-    () => this.end('transmission failed')
-  )
-} else {
-  this.end('no compatible backend')
-}
-}
-      },
-      "title": "Data transmission (beta)",
-      "content": "\u003Cmain class=\"content-horizontal-center content-vertical-center\"\u003E\n  \u003Cdiv\u003E\n    \u003Cimg src=\"lib\u002Floading.svg\"\u003E\n    \u003Cp\u003E\n      \u003Cspan class=\"font-weight-bold\"\u003E\n        ${ this.parameters.message }\n      \u003C\u002Fspan\u003E\u003Cbr\u003E\n      \u003Cspan class=\"text-muted\"\u003E\n        ${ this.parameters.subtitle }\n      \u003C\u002Fspan\u003E\n    \u003C\u002Fp\u003E\n  \u003C\u002Fdiv\u003E\n\u003C\u002Fmain\u003E",
-      "notes": "This template transmits the study data to a compatible server-side backend. Currently, it supports the PHP, Open Lab and JATOS backends.\n\nIt will wait until the data is transferred, showing a waiting screen with the text defined below, and continue with the remainder of the study after the transmission is complete. Please note that this screen will be skipped if no compatible backend is available."
     },
     {
       "type": "lab.canvas.Screen",

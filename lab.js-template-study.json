@@ -136,9 +136,14 @@
       "_tab": "Behavior",
       "skip": true
     },
-    "4": {
-      "id": "4",
-      "type": "lab.html.Screen",
+    "5": {
+      "id": "5",
+      "type": "lab.canvas.Screen",
+      "content": [],
+      "viewport": [
+        800,
+        600
+      ],
       "files": {
         "rows": []
       },
@@ -167,15 +172,23 @@
         "rows": [
           [
             {
-              "title": "define_plugin",
-              "message": "before:prepare",
-              "code": "class Session extends lab.plugins.Transmit {\n  constructor(options={}) {\n    options.url = options.url || 'data/';\n    super(options);\n  }\n\n  // initialize information about session from server\n  async init() {\n    try {\n      const url_params = Object.fromEntries(new URLSearchParams(document.location.search)); \n      const session = await fetch(\n        \"session\",\n        {\n          method: 'POST',\n          headers: { 'content-type': 'application/json' },\n          body: JSON.stringify(url_params),\n        });\n      this.session = await session.json();\n    } catch(e) {\n      throw new Error(\"Unable to fetch session\", e);\n    }\n    // splice session into metadata (overriding existing values)\n    this.metadata = {\n      ...this.metadata,\n      ...this.session\n    };\n\n    // set up unload handler\n    window.addEventListener('unload', () => {\n      const status = this.session.status;\n      if (status != \"submitted\" && status != \"assigned\") {\n        this.updateStatus(\"abandoned\");\n      }\n    });\n\n    \n  }\n\n  updateStatus(status) {\n    const url = `session/${this.session.session_id}/status`;\n    const response = window.navigator.sendBeacon(url, status);\n    console.log(`updated status to ${status}: ${response}`);\n  }\n\n  async handle(context, event) {\n    switch(event) {\n    case 'before:prepare':\n      // add session info to the\n      console.log(`before:prepare triggered on ${context}`);\n      console.log(\"initializing Session manager\");\n      await this.init();\n      console.log(`received session: `, this.session);\n      context.parameters.session = this.session;\n\n      // listen for status updates via datastore\n      context.options.datastore.on('commit', () => {\n        // Custom logic, e.g.\n        if (/^status:/.test(context.state.sender)) {\n          const status = context.state.sender.replace(\"status:\", \"\");\n          console.log(`status update: ${status}`);\n          this.updateStatus(status);\n        }\n      });\n\n      break;\n    }\n\n    // fall back\n    super.handle(context, event);\n  }\n}\n\nwindow.Session = Session;\n\nthis.plugins.add(new Session())"
+              "title": "session-manager",
+              "message": "run",
+              "code": "class Session extends lab.plugins.Transmit {\n  constructor(options={}) {\n    options.url = options.url || 'data/';\n    super(options);\n  }\n\n  // initialize information about session from server\n  async init() {\n    try {\n      const url_params = Object.fromEntries(new URLSearchParams(document.location.search)); \n      const session = await fetch(\n        \"session\",\n        {\n          method: 'POST',\n          headers: { 'content-type': 'application/json' },\n          body: JSON.stringify(url_params),\n        });\n      this.session = await session.json();\n    } catch(e) {\n      throw new Error(\"Unable to fetch session\", e);\n    }\n    // splice session into metadata (overriding existing values)\n    this.metadata = {\n      ...this.metadata,\n      ...this.session\n    };\n\n    // set up unload handler\n    window.addEventListener('unload', () => {\n      const status = this.session.status;\n      if (status != \"submitted\" && status != \"assigned\") {\n        this.updateStatus(\"abandoned\");\n      }\n    });\n\n    \n  }\n\n  updateStatus(status) {\n    const url = `session/${this.session.session_id}/status`;\n    const response = window.navigator.sendBeacon(url, status);\n    console.log(`updated status to ${status}: ${response}`);\n  }\n\n  async handle(context, event) {\n    switch(event) {\n    case 'before:prepare':\n      // add session info to the\n      console.log(`before:prepare triggered on ${context}`);\n      console.log(\"initializing Session manager\");\n      await this.init();\n      console.log(`received session: `, this.session);\n      context.parameters.session = this.session;\n\n      // listen for status updates via datastore\n      context.options.datastore.on('commit', () => {\n        // Custom logic, e.g.\n        if (/^status:/.test(context.state.sender)) {\n          const status = context.state.sender.replace(\"status:\", \"\");\n          console.log(`status update: ${status}`);\n          this.updateStatus(status);\n        }\n      });\n\n      break;\n    }\n\n    // fall back\n    super.handle(context, event);\n  }\n}\n\nwindow.Session = Session;\n\nthis.plugins.add(new Session());\n"
+            }
+          ],
+          [
+            {
+              "title": "transmit-plugin",
+              "message": "run",
+              "code": "function anonymous(\n          ) {\n          const transmitPlugins = this.parents[0].plugins.plugins\n            .filter(p => p instanceof lab.plugins.Transmit)\n\n          if (transmitPlugins.length > 0) {\n            // If a transmitPlugin is available,\n            // pull out its options and transfer the data\n            const ds = this.options.datastore\n            const tp = transmitPlugins[0]\n            console.log(tp)\n            ds.transmit(\n              tp.url,\n              { ...tp.metadata, payload: 'full' },\n              { headers: tp.headers, encoding: tp.encoding },\n            ).then(\n              () => this.end('transmission successful')\n            ).catch(\n              () => this.end('transmission failed')\n            )\n          } else if ('jatos' in window) {\n            // If JATOS is available, send data there\n            jatos.submitResultData(\n              this.options.datastore.exportJson(),\n              () => this.end('transmission successful'),\n              () => this.end('transmission failed')\n            )\n          } else {\n            console.log('no compatible backend')\n            this.end('no compatible backend')\n          }\n        }\n  "
             }
           ]
         ]
       },
-      "title": "Transmission",
-      "_tab": "Scripts"
+      "title": "Session-plugin",
+      "_tab": "Scripts",
+      "skip": true
     },
     "7": {
       "id": "7",
@@ -869,57 +882,6 @@
       "title": "Thanks",
       "content": "<header>\n  <h2>Thank you!</h2>\n</header>\n<main class=\"content-horizontal-center content-vertical-center\">\n  <div class=\"w-m\">\n    <div class=\"alert text-center\">\n      <p class=\"font-weight-bold\">\n        You have successfully completed<br>\n        the calibration task.\n      </p>\n    </div>\n    <p>\n      Please click below to continue with the study.\n    </p>\n  </div>\n</main>\n<footer class=\"content-horizontal-right\">\n  <button id=\"continue\">Continue &rarr;</button>\n</footer>"
     },
-    "30": {
-      "id": "30",
-      "type": "lab.html.Screen",
-      "files": {
-        "rows": []
-      },
-      "parameters": {
-        "rows": [
-          [
-            {
-              "name": "message",
-              "value": "Transferring data",
-              "type": "string"
-            }
-          ],
-          [
-            {
-              "name": "subtitle",
-              "value": "Please wait a second…",
-              "type": "string"
-            }
-          ]
-        ]
-      },
-      "responses": {
-        "rows": [
-          [
-            "",
-            "",
-            "",
-            ""
-          ]
-        ]
-      },
-      "messageHandlers": {
-        "rows": [
-          [
-            {
-              "title": "",
-              "message": "run",
-              "code": "const transmitPlugins = this.parents[0].plugins.plugins\n  .filter(p => p instanceof lab.plugins.Transmit)\n\nif (transmitPlugins.length > 0) {\n  // If a transmitPlugin is available,\n  // pull out its options and transfer the data\n  const ds = this.options.datastore\n  const tp = transmitPlugins[0]\n  ds.transmit(\n    tp.url,\n    { ...tp.metadata, payload: 'full' },\n    { headers: tp.headers, encoding: tp.encoding },\n  ).then(\n    () => this.end('transmission successful')\n  ).catch(\n    () => this.end('transmission failed')\n  )\n} else if ('jatos' in window) {\n  // If JATOS is available, send data there\n  jatos.submitResultData(\n    this.options.datastore.exportJson(),\n    () => this.end('transmission successful'),\n    () => this.end('transmission failed')\n  )\n} else {\n  this.end('no compatible backend')\n}"
-            }
-          ]
-        ]
-      },
-      "title": "Data transmission (beta)",
-      "content": "<main class=\"content-horizontal-center content-vertical-center\">\n  <div>\n    <img src=\"lib/loading.svg\">\n    <p>\n      <span class=\"font-weight-bold\">\n        ${ this.parameters.message }\n      </span><br>\n      <span class=\"text-muted\">\n        ${ this.parameters.subtitle }\n      </span>\n    </p>\n  </div>\n</main>",
-      "_tab": "Parameters",
-      "_template": true,
-      "notes": "This template transmits the study data to a compatible server-side backend. Currently, it supports the PHP, Open Lab and JATOS backends.\n\nIt will wait until the data is transferred, showing a waiting screen with the text defined below, and continue with the remainder of the study after the transmission is complete. Please note that this screen will be skipped if no compatible backend is available."
-    },
     "33": {
       "id": "33",
       "type": "lab.html.Screen",
@@ -1054,7 +1016,9 @@
           ]
         ]
       },
-      "title": "INSERT-STUDY"
+      "title": "INSERT-STUDY",
+      "_tab": "Behavior",
+      "timeout": "1000"
     },
     "root": {
       "messageHandlers": {
@@ -1072,15 +1036,14 @@
       "title": "root",
       "type": "lab.flow.Sequence",
       "children": [
-        "4",
         "7",
+        "5",
         "8",
         "33",
         "11",
         "2",
         "35",
         "1",
-        "30",
         "3",
         "9"
       ],
