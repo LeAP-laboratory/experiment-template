@@ -361,7 +361,7 @@
             {
               "title": "submit_form",
               "message": "before:prepare",
-              "code": "function getQueryVariable(variable){\n          let query = new URLSearchParams(location.search);\n          let value = query.get(variable);\n          return value;}\n\nconsole.log(\"filling form fields\")\n\nvar aid = getQueryVariable(\"assignmentId\");\nvar wid = getQueryVariable(\"workerId\");\n\nthis.parameters.turkSubmitTo = getQueryVariable(\"turkSubmitTo\");\n\nthis.parameters.assignmentId = aid;\nthis.parameters.workerId = wid;\n"
+              "code": "function getQueryVariable(variable){\n          let query = new URLSearchParams(location.search);\n          let value = query.get(variable);\n          return value;}\n\nconsole.log(\"filling form fields\")\n\nvar aid = getQueryVariable(\"assignmentId\");\nvar wid = getQueryVariable(\"workerId\");\nvar turkSubmitTo = getQueryVariable(\"turkSubmitTo\") + \"/mturk/externalSubmit\";\n\nconsole.log(this.parameters.turkSubmitTo);\n\nthis.parameters.assignmentId = aid;\nthis.parameters.workerId = wid;\nthis.parameters.turkSubmitTo = turkSubmitTo;"
             }
           ]
         ]
@@ -1117,7 +1117,7 @@
   },
   "version": [
     20,
-    0,
+    1,
     1
   ],
   "files": {

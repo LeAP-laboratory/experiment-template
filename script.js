@@ -7,12 +7,13 @@ const study = lab.util.fromObject({
     {
       "type": "lab.plugins.Metadata",
       "path": undefined
-    },
-    {
-      "type": "lab.plugins.Transmit",
-      "url": "backend.php",
-      "path": undefined
     }
+    // no need to download files
+    // {
+    //   "type": "lab.plugins.Download",
+    //   "filePrefix": "lab.js-template-study",
+    //   "path": undefined
+    // }
   ],
   "metadata": {
     "title": "lab.js template study",
@@ -41,7 +42,7 @@ class Session extends lab.plugins.Transmit {
   // initialize information about session from server
   async init() {
     try {
-      const url_params = Object.fromEntries(new URLSearchParams(document.location.search)); 
+      const url_params = Object.fromEntries(new URLSearchParams(document.location.search));
       const session = await fetch(
         "session",
         {
@@ -67,7 +68,7 @@ class Session extends lab.plugins.Transmit {
       }
     });
 
-    
+
   }
 
   updateStatus(status) {
@@ -509,12 +510,13 @@ console.log("filling form fields")
 
 var aid = getQueryVariable("assignmentId");
 var wid = getQueryVariable("workerId");
+var turkSubmitTo = getQueryVariable("turkSubmitTo") + "/mturk/externalSubmit";
 
-this.parameters.turkSubmitTo = getQueryVariable("turkSubmitTo");
+console.log(this.parameters.turkSubmitTo);
 
 this.parameters.assignmentId = aid;
 this.parameters.workerId = wid;
-
+this.parameters.turkSubmitTo = turkSubmitTo;
 }
           },
           "title": "Submit HIT",
