@@ -7,13 +7,12 @@ const study = lab.util.fromObject({
     {
       "type": "lab.plugins.Metadata",
       "path": undefined
+    },
+    {
+      "type": "lab.plugins.Download",
+      "filePrefix": "lab.js-template-study",
+      "path": undefined
     }
-    // no need to download files
-    // {
-    //   "type": "lab.plugins.Download",
-    //   "filePrefix": "lab.js-template-study",
-    //   "path": undefined
-    // }
   ],
   "metadata": {
     "title": "lab.js template study",
@@ -42,7 +41,7 @@ class Session extends lab.plugins.Transmit {
   // initialize information about session from server
   async init() {
     try {
-      const url_params = Object.fromEntries(new URLSearchParams(document.location.search));
+      const url_params = Object.fromEntries(new URLSearchParams(document.location.search)); 
       const session = await fetch(
         "session",
         {
@@ -68,7 +67,7 @@ class Session extends lab.plugins.Transmit {
       }
     });
 
-
+    
   }
 
   updateStatus(status) {
@@ -444,10 +443,9 @@ this.state.headphone_check_performance = performance
           "messageHandlers": {
             "run": function anonymous(
 ) {
-const parent = this.parents[this.parents.length-1];
-
-const transmitPlugins = parent.plugins.plugins
-  .filter(p => p instanceof window.Session)
+const transmitPlugins = this.parents
+  .reduce((acc, parent) => acc.concat(parent.plugins.plugins), [])
+  .filter(p => p instanceof window.Session);
 
 if (transmitPlugins.length > 0) {
   // If a transmitPlugin is available,
