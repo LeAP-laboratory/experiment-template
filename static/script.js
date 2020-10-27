@@ -114,8 +114,6 @@ if (document.location.hostname.includes('labjs.felixhenninger.com') ||
 }
 
 }
-
-
       },
       "title": "Session",
       "content": [
