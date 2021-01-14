@@ -104,7 +104,17 @@ class Session extends lab.plugins.Transmit {
   }
 }
 window.Session = Session;
-this.plugins.add(new Session());
+
+if (document.location.hostname.includes('labjs.felixhenninger.com') ||
+    document.location.hostname.includes('labjs-beta.netlify.app')) {
+  if (this.parameters.session === undefined) {
+    this.parameters.session = {};
+  }
+  this.parameters.session.status = 'assigned';
+  console.log("Session: Running on builder, using shim");
+} else {
+  this.plugins.add(new Session());
+}
 
 }
       },
